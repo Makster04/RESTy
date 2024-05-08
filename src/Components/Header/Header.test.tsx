@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Header from './index';
+import { test } from '@jest/globals'; // Import test function
 
-// Test to check if Header component renders correctly
 test('renders Header component', () => {
   const { getByText } = render(<Header />);
   const linkElement = getByText(/RESTy/i); // Finding the text 'RESTy' in the rendered component

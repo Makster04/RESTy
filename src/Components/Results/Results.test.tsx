@@ -1,8 +1,8 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import Results from './index';
+import { test } from '@jest/globals'; // Import test function
 
-// Test to check if Results component renders loading state correctly
 test('renders Results component with loading state', () => {
   const { getByText } = render(<Results data={null} />);
   const loadingElement = getByText(/Loading.../i); // Finding the text 'Loading...' in the rendered component

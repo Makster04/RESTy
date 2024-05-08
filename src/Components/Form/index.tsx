@@ -1,77 +1,94 @@
 import React, { useState } from 'react';
+
 import './Form.scss';
 
 interface FormProps {
-  handleApiCall: (requestParams: { method: string; url: string }) => void; // Define prop types
+  handleApiCall: (formData: {
+    method: string;
+    url: string
+  }) => void;
 }
 
-const Form: React.FC<FormProps> = ({ handleApiCall }) => { // Convert Form to a functional component
-  const [method, setMethod] = useState<string>('get'); // Use useState for method
-  const [url, setUrl] = useState<string>(''); // Use useState for URL
+const Form: React.FunctionComponent<FormProps> = ({ handleApiCall }) => {
+  const [method, setMethod] = useState('GET');
+  const [url, setUrl] = useState('');
+  const [requestBody, setRequestBody] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    handleApiCall({ method: 'GET', url: 'https//pokeapi.co/api/v2/pokemon' }); // Call handleApiCall function with method and URL
+
+    handleApiCall({ method, url });
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <label>
-        Method: GET
-        <select value={method} onChange={(e) => setMethod(e.target.value)}>
-          <option value="get">GET</option>
-          <option value="post">POST</option>
-          <option value="put">PUT</option>
-          <option value="delete">DELETE</option>
-        </select>
-      </label>
-      <label>
-        URL: https://pokeapi.co/api/v2/pokemon 
-        <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
-      </label>
-      <button type="submit">Go</button>
-    </form>
-  );
-};
-
-export default Form;
-
-
-{/* import React from 'react';
-
-import './Form.scss';
-
-class Form extends React.Component {
-
-  handleSubmit = e => {
-    e.preventDefault();
-    const formData = {
-      method:'GET',
-      url: 'https://pokeapi.co/api/v2/pokemon',
-    };
-    this.props.handleApiCall(formData);
-  }
-
-  render() {
     return (
       <>
-        <form onSubmit={this.handleSubmit}>
-          <label >
-            <span>URL: </span>
-            <input name='url' type='text' />
-            <button type="submit">GO!</button>
+        <form onSubmit={handleSubmit}>
+      <label>
+        <span>URL: </span>
+        <input
+          name="url" 
+          type="text" 
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+        />
+        <button type="submit">GO!</button>
+      </label>
+      <label className="methods">
+        <input
+          type="radio" 
+          id="get" 
+          name="method" 
+          value="GET" 
+          checked={method === 'GET'}
+          onChange={() => setMethod('GET')}
+        /> GET
+        <input
+          type="radio" 
+          id="post" 
+          name="method" 
+          value="POST" 
+          checked={method === 'POST'} 
+          onChange={() => setMethod('POST')} 
+        /> POST
+        <input
+          type="radio" 
+          id="put" 
+          name="method" 
+          value="PUT" 
+          checked={method === 'PUT'} 
+          onChange={() => setMethod('PUT')} 
+        /> PUT
+        <input
+          type="radio" 
+          id="patch" 
+          name="method" 
+          value="PATCH" 
+          checked={method === 'PATCH'} 
+          onChange={() => setMethod('PATCH')} 
+        /> PATCH
+        <input
+          type="radio" 
+          id="delete" 
+          name="method" 
+          value="DELETE" 
+          checked={method === 'DELETE'} 
+          onChange={() => setMethod('DELETE')} 
+        /> DELETE
+      </label>
+      {['POST', 'PUT'].includes(method) && (
+        <div>
+          <label>
+            <span>Request Body: </span>
+            <textarea
+              value={requestBody}
+              onChange={(e) => setRequestBody(e.target.value)}
+            />
           </label>
-          <label className="methods">
-            <span id="get">GET</span>
-            <span id="post">POST</span>
-            <span id="put">PUT</span>
-            <span id="delete">DELETE</span>
-          </label>
-        </form>
+        </div>
+      )}
+    </form>
       </>
     );
-  }
 }
 
 export default Form;
- */}

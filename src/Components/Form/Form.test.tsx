@@ -1,45 +1,38 @@
-import React, { useState } from 'react';
-import './Form.scss';
+import { screen, render, fireEvent } from '@testing-library/react';
+import Form from './Form';
 
-interface FormProps {
-  handleApiCall: (requestParams: { method: string; url: string }) => void; // Define prop types
-}
+// contracts -> agreement between 2 parties
 
-const Form: React.FC<FormProps> = ({ handleApiCall }) => { // Convert Form to a functional component
-  // State variables for method and URL, initialized with default values
-  const [method, setMethod] = useState<string>('get'); // Use useState for method
-  const [url, setUrl] = useState<string>(''); // Use useState for URL
+// Component is 1 party, the user is the other.
 
-  // Function to handle form submission
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Call the handleApiCall function with method and URL parameters
-    handleApiCall({ method: 'GET', url: 'https//pokeapi.co/api/v2/pokemon' }); // Call handleApiCall function with method and URL
-  };
+// Form: accept inputs,  calls a function to make a request
 
-  return (
-    <form onSubmit={handleSubmit}>
-      {/* Method selection input */}
-      <label>
-        Method: GET
-        {/* Method select dropdown, controlled by state */}
-        <select value={method} onChange={(e) => setMethod(e.target.value)}>
-          <option value="get">GET</option>
-          <option value="post">POST</option>
-          <option value="put">PUT</option>
-          <option value="delete">DELETE</option>
-        </select>
-      </label>
-      {/* URL input */}
-      <label>
-        URL: https://pokeapi.co/api/v2/pokemon 
-        {/* URL input field, controlled by state */}
-        <input type="text" value={url} onChange={(e) => setUrl(e.target.value)} />
-      </label>
-      {/* Form submission button */}
-      <button type="submit">Go</button>
-    </form>
-  );
-};
+// what does this look like?
+  // feels very abstract.
+  // manual tests feel more natural.
+describe("Form Component", () => {
+  test('Renders a GET POST PUT PATCH and DELETE button', async()=> {
+    render(<Form handleSubmit={console.log} />);
 
-export default Form;
+    screen.debug(); // this prints the "HTML" in our terminal.
+
+    expect(await screen.getByText(/GET/)).toBeVisible();
+    expect(await screen.getByText(/POST/)).toBeVisible();
+    expect(await screen.getByText(/PUT/)).toBeVisible();
+    expect(await screen.getByText(/PATCH/)).toBeVisible();
+    expect(await screen.getByText(/DELETE/)).toBeVisible();
+  });
+  test('Calls a function on submit', async() => {
+    const state = { results: { method: null, url: null} };
+    const testFunction = (param: {method: string, url: string}) => {
+      state.results = param;
+    }
+
+    render(<Form handleSubmit={testFunction}/>)
+    const postBtn = await screen.getByText('POST');
+    const urlInput = await screen.getByTestId('url-input');
+    fireEvent.click(postBtn);
+    fireEvent.change(urlInput, { target: { value: 'test' }});
+    fireEvent.click(await screen.getByText('GO'));
+  }); 
+});
